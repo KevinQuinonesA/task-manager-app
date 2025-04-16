@@ -1,0 +1,76 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: kevinquinones27
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: task-management-backend
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: python3.12
+  environment:
+    MONGODB_URI: ${env:MONGODB_URI}
+    JWT_SECRET: ${env:JWT_SECRET}
+  httpApi:
+    cors: true
+
+functions:
+  registerUser:
+    handler: src.lambda.auth_functions.register_user
+    events:
+      - http:
+          path: auth/register
+          method: post
+          cors: true
+
+  authenticateUser:
+    handler: src.lambda.auth_functions.authenticate_user
+    events:
+      - http:
+          path: auth/login
+          method: post
+          cors: true
+
+  getTasks:
+    handler: src.lambda.task_functions.get_tasks
+    events:
+      - http:
+          path: tasks
+          method: get
+          cors: true
+
+  addTask:
+    handler: src.lambda.task_functions.add_task
+    events:
+      - http:
+          path: tasks
+          method: post
+          cors: true
+
+  updateTask:
+    handler: src.lambda.task_functions.update_task
+    events:
+      - http:
+          path: tasks/{id}
+          method: put
+          cors: true
+
+  deleteTask:
+    handler: src.lambda.task_functions.delete_task
+    events:
+      - http:
+          path: tasks/{id}
+          method: delete
+          cors: true
+
+plugins:
+  - serverless-python-requirements
+
+package:
+  individually: true
+  include:
+    - src/**/*.py # Include all Python files in src directory
+
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux
