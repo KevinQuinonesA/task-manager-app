@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { TaskService } from '../services/taskService';
 
-export type TaskStatus = 'todo' | 'in_progress' | 'completed';
+export type TaskStatus = 'todo' | 'in_progress' | 'done';
 
 export interface Task {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   status: TaskStatus;
@@ -18,7 +18,7 @@ interface TaskState {
   isLoading: boolean;
   error: string | null;
   fetchTasks: () => Promise<void>;
-  addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'userId'>) => Promise<void>;
+  addTask: (task: Omit<Task, '_id' | 'createdAt' | 'updatedAt' | 'userId'>) => Promise<void>;
   updateTask: (id: string, task: Partial<Task>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
 }
@@ -32,7 +32,7 @@ export const useTaskStore = create<TaskState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const tasks = await TaskService.getTasks();
-      set({ tasks, isLoading: false });
+      set({ tasks: tasks, isLoading: false });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
     }
@@ -57,7 +57,7 @@ export const useTaskStore = create<TaskState>((set) => ({
       const updatedTask = await TaskService.updateTask(id, taskData);
       set((state) => ({
         tasks: state.tasks.map(task => 
-          task.id === id ? { ...task, ...updatedTask } : task
+          task._id === id ? { ...task, ...updatedTask } : task
         ),
         isLoading: false
       }));
@@ -71,7 +71,7 @@ export const useTaskStore = create<TaskState>((set) => ({
     try {
       await TaskService.deleteTask(id);
       set((state) => ({
-        tasks: state.tasks.filter(task => task.id !== id),
+        tasks: state.tasks.filter(task => task._id !== id),
         isLoading: false
       }));
     } catch (error) {

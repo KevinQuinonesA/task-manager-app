@@ -12,7 +12,7 @@ export const TaskService = {
     return data;
   },
 
-  createTask: async (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'userId'>): Promise<Task> => {
+  createTask: async (taskData: Omit<Task, '_id' | 'createdAt' | 'updatedAt' | 'userId'>): Promise<Task> => {
     const { data } = await api.post<Task>('/tasks', taskData);
     return data;
   },

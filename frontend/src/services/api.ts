@@ -1,12 +1,13 @@
 import axios from 'axios'
 import { useAuthStore } from '../store/authStore.ts'
 
-const API_URL = 'http://localhost:8000/api'
+const API_URL = 'https://n8rzweu3s6.execute-api.us-east-1.amazonaws.com/dev'
 
 const api = axios.create({
   baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+
   }
 })
 
