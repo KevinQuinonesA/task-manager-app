@@ -32,7 +32,7 @@ const DeleteTaskDialog: React.FC<DeleteTaskDialogProps> = ({
     setError(null)
 
     try {
-      await deleteTask(task.id)
+      await deleteTask(task._id)
       onClose()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete task')
